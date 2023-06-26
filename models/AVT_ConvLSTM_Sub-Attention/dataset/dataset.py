@@ -299,7 +299,7 @@ if __name__ == '__main__':
     from torch.utils.data import WeightedRandomSampler, DataLoader
     from torchvision import transforms
 
-    root_dir = '/cvhci/temp/wpingcheng/DAIC_WOZ-generated_database_V2/train/clipped_data/'
+    root_dir = '/home/keyan/workspace/DepressionRec/dataset/DAIC_WOZ-generated_database_V2/train/clipped_data/'
 
     # test 3: try to load the dataset with DataLoader
     transformed_dataset = DepressionDataset(root_dir, 'train',

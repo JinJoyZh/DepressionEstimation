@@ -1,15 +1,15 @@
 !!omap
 - OUTPUT_DIR: exp_AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention+Soft
 - SAVE_CONFIG_NAME: config_AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention+Soft.yaml
-- CKPTS_DIR: /cvhci/temp/wpingcheng/ckpts_fusion/
+- CKPTS_DIR: /home/keyan/workspace/DepressionRec/dataset/ckpts_fusion/
 - TYPE: AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention+Soft
 - MANUAL_SEED: 1
 - LOG_TITLE: Depression Detection with audio + visual + text data, ConvBiLSTM, PHQ-Subscores,
     Fusion-Sub-Attention, KLDivLoss(soft-label), ASAM
 - DATA: !!omap
-  - TRAIN_ROOT_DIR: /cvhci/temp/wpingcheng/DAIC_WOZ-generated_database_V2/train/clipped_data/
-  - VALIDATION_ROOT_DIR: /cvhci/temp/wpingcheng/DAIC_WOZ-generated_database_V2/train/original_data/
-  - TEST_ROOT_DIR: /cvhci/temp/wpingcheng/DAIC_WOZ-generated_database_V2/test/clipped_data/
+  - TRAIN_ROOT_DIR: /home/keyan/workspace/DepressionRec/dataset/DAIC_WOZ-generated_database_V2/train/clipped_data/
+  - VALIDATION_ROOT_DIR: /home/keyan/workspace/DepressionRec/dataset/DAIC_WOZ-generated_database_V2/train/original_data/
+  - TEST_ROOT_DIR: /home/keyan/workspace/DepressionRec/dataset/DAIC_WOZ-generated_database_V2/test/clipped_data/
   - USE_MEL_SPECTROGRAM: true
   - VISUAL_WITH_GAZE: true
   - PADDING:
@@ -25,7 +25,7 @@
     - DATE:
     - PATH: model_weights
     - NAME:
-    - CUSTOM_ABSOLUTE_PATH: /cvhci/temp/wpingcheng/ckpts_fusion/AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention+Soft/AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention+Soft_2022-03-22_155959_acc-81.2245.pt
+    - CUSTOM_ABSOLUTE_PATH: /home/keyan/workspace/DepressionRec/dataset/ckpts_fusion/AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention+Soft/AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention.pt
     - INCLUDED:
       - audio_net
       - visual_net

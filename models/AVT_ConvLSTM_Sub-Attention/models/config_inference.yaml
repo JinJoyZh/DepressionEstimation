@@ -65,15 +65,15 @@
 
 OUTPUT_DIR: inference_DepressionAnalysis_AV
 SAVE_CONFIG_NAME: inference_DepressionAnalysis_AV.yaml
-CKPTS_DIR: /cvhci/temp/wpingcheng/ckpts_new/
+CKPTS_DIR: /home/keyan/workspace/DepressionRec/ckpts_new/
 TYPE: AV+ConvBiLSTM+PHQ-Subscores+Attention
 MANUAL_SEED: 1
 LOG_TITLE: Depression Detection with audio and visual data, ConvBiLSTM, PHQ-Subscores, Fusion-Attention, CrossEntropy, ASAM
 
 DATA:
-  TRAIN_ROOT_DIR: /cvhci/temp/wpingcheng/DAIC_WOZ-generated_database_V2/train/clipped_data/
-  VALIDATION_ROOT_DIR: /cvhci/temp/wpingcheng/DAIC_WOZ-generated_database_V2/train/original_data/
-  TEST_ROOT_DIR: /cvhci/temp/wpingcheng/DAIC_WOZ-generated_database_V2/test/clipped_data/
+  TRAIN_ROOT_DIR: /home/keyan/workspace/DepressionRec/DAIC_WOZ-generated_database_V2/train/clipped_data/
+  VALIDATION_ROOT_DIR: /home/keyan/workspace/DepressionRec/DAIC_WOZ-generated_database_V2/train/original_data/
+  TEST_ROOT_DIR: /home/keyan/workspace/DepressionRec/DAIC_WOZ-generated_database_V2/test/clipped_data/
   USE_MEL_SPECTROGRAM: True
   VISUAL_WITH_GAZE: True
   PADDING:
@@ -89,7 +89,7 @@ MODEL:
     TYPE: others        # ['new', 'last', 'absolute_path', others custom_type]
     DATE:
     PATH: model_weights
-    NAME: AV+ConvBiLSTM+PHQ-Subscores+Attention_2022-03-17_154824_acc-82.0408.pt
+    NAME: AV+ConvBiLSTM+PHQ-Subscores+Attention.pt
     CUSTOM_ABSOLUTE_PATH: 
     INCLUDED: ['audio_net', 'visual_net', 'evaluator']
   VISUAL_NET:

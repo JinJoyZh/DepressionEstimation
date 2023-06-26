@@ -65,15 +65,15 @@
 
 OUTPUT_DIR: inference_DepressionAnalysis_AVT_PHQ-score
 SAVE_CONFIG_NAME: inference_DepressionAnalysis_AVT.yaml
-CKPTS_DIR: /cvhci/temp/wpingcheng/ckpts_new/
+CKPTS_DIR: /home/keyan/workspace/DepressionRec/dataset/ckpts_new
 TYPE: AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention
 MANUAL_SEED: 1
 LOG_TITLE: Depression Detection with audio + visual + text data, ConvBiLSTM, PHQ-Subscores, Fusion-Sub-Attention, KLDivLoss, ASAM
 
 DATA:
-  TRAIN_ROOT_DIR: /cvhci/temp/wpingcheng/DAIC_WOZ-generated_database_V2/train/clipped_data/
-  VALIDATION_ROOT_DIR: /cvhci/temp/wpingcheng/DAIC_WOZ-generated_database_V2/train/original_data/
-  TEST_ROOT_DIR: /cvhci/temp/wpingcheng/DAIC_WOZ-generated_database_V2/test/clipped_data/
+  TRAIN_ROOT_DIR: /home/keyan/workspace/DepressionRec/dataset/DAIC_WOZ-generated_database_V2/train/clipped_data/
+  VALIDATION_ROOT_DIR: /home/keyan/workspace/DepressionRec/dataset/DAIC_WOZ-generated_database_V2/train/original_data/
+  TEST_ROOT_DIR: /home/keyan/workspace/DepressionRec/dataset/DAIC_WOZ-generated_database_V2/test/clipped_data/
   USE_MEL_SPECTROGRAM: True
   VISUAL_WITH_GAZE: True
   PADDING:
@@ -89,8 +89,8 @@ MODEL:
     TYPE: absolute_path        # ['new', 'last', 'absolute_path', others custom_type]
     DATE:
     PATH: model_weights
-    NAME: AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention+Soft_2022-03-24_225753_acc-82.6531.pt
-    CUSTOM_ABSOLUTE_PATH: /cvhci/temp/wpingcheng/ckpts_fusion/AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention+Soft/AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention+Soft_2022-03-24_225753_f1_score-0.6444.pt
+    NAME: AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention.pt
+    CUSTOM_ABSOLUTE_PATH: /home/keyan/workspace/DepressionRec/DepressionEstimation/models/AVT_ConvLSTM_Sub-Attention/model_weights/AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention.pt
     INCLUDED: ['audio_net', 'visual_net', 'text_net', 'evaluator']
   VISUAL_NET:
     INPUT_DIM: 3
