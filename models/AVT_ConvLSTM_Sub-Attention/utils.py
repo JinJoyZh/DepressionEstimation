@@ -1,4 +1,5 @@
 from itertools import count
+from collections import OrderedDict
 import os
 import sys
 import random
@@ -248,15 +249,27 @@ def get_models(model_config, args, model_type=None, ckpt_path=None):
 
         if 'visual_net' in model_config['WEIGHTS']['INCLUDED']:
             print("Loading Deep Visual Net weights from {}".format(weights_path))
-            visual_net.load_state_dict(checkpoint['visual_net'])
+            new_state_dict = OrderedDict()
+            for k, v in checkpoint['visual_net'].items():
+                name = "module." + k
+                new_state_dict[name] = v
+            visual_net.load_state_dict(new_state_dict)
 
         if 'audio_net' in model_config['WEIGHTS']['INCLUDED']:
             print("Loading Deep Audio Net weights from {}".format(weights_path))
-            audio_net.load_state_dict(checkpoint['audio_net'])
+            new_state_dict = OrderedDict()
+            for k, v in checkpoint['audio_net'].items():
+                name = "module." + k
+                new_state_dict[name] = v
+            audio_net.load_state_dict(new_state_dict)
         
         if 'text_net' in model_config['WEIGHTS']['INCLUDED']:
             print("Loading Deep Text Net weights from {}".format(weights_path))
-            text_net.load_state_dict(checkpoint['text_net'])
+            new_state_dict = OrderedDict()
+            for k, v in checkpoint['text_net'].items():
+                name = "module." + k
+                new_state_dict[name] = v
+            text_net.load_state_dict(new_state_dict)
 
         # if 'fusion_net' in model_config['WEIGHTS']['INCLUDED']:
         #     print("Loading Attention Fusion Layer weights from {}".format(weights_path))
@@ -264,7 +277,11 @@ def get_models(model_config, args, model_type=None, ckpt_path=None):
 
         if 'evaluator' in model_config['WEIGHTS']['INCLUDED']:
             print("Loading MUSDL weights from {}".format(weights_path))
-            evaluator.load_state_dict(checkpoint['evaluator'])
+            new_state_dict = OrderedDict()
+            for k, v in checkpoint['evaluator'].items():
+                name = "module." + k
+                new_state_dict[name] = v
+            evaluator.load_state_dict(new_state_dict)
 
     return visual_net, audio_net, text_net, evaluator  # fusion_net
 

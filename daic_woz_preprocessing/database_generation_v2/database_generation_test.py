@@ -453,7 +453,7 @@ if __name__ == '__main__':
     gt_df = pd.read_csv(gt_path) 
 
     # initialization
-    use_embed_large = hub.load("https://tfhub.dev/google/universal-sentence-encoder-large/5")
+    use_embed_large = hub.load("/home/keyan/workspace/DepressionRec/models/universal-sentence-encoder-large_5")
     window_size = 60   # 60s
     overlap_size = 10  # 10s
     GT = {'original_data': {'ID_gt':[], 'gender_gt': [], 'phq_binary_gt': [], 'phq_score_gt':[]}, 
@@ -462,24 +462,24 @@ if __name__ == '__main__':
     for i in range(len(gt_df)):
         # extract training gt details
         patient_ID = gt_df['Participant_ID'][i]
-        phq_binary_gt = gt_df['PHQ8_Binary'][i]
-        phq_score_gt = gt_df['PHQ8_Score'][i]
+        phq_binary_gt = gt_df['PHQ_Binary'][i]
+        phq_score_gt = gt_df['PHQ_Score'][i]
         gender_gt = gt_df['Gender'][i]
         print(f'Processing Participant {patient_ID}, Gender: {gender_gt} ...')
         print(f'- PHQ Binary: {phq_binary_gt}, PHQ Score: {phq_score_gt}')
 
         # get all files path of participant
-        keypoints_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_P/{patient_ID}_CLNF_features3D.txt'
-        gaze_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_P/{patient_ID}_CLNF_gaze.txt'
-        AUs_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_P/{patient_ID}_CLNF_AUs.txt'
-        pose_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_P/{patient_ID}_CLNF_pose.txt'
-        # if patient_ID == 300:
-        #     hog_path = f'/cvhci/temp/wpingcheng/{patient_ID}_CLNF_hog.bin'
-        # else:
-        #     hog_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_P/{patient_ID}_CLNF_hog.bin'
-        hog_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_P/{patient_ID}_CLNF_hog.bin'
-        audio_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_P/{patient_ID}_AUDIO.wav'
-        text_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_P/{patient_ID}_TRANSCRIPT.csv'
+        keypoints_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_CLNF_features3D.txt'
+        gaze_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_CLNF_gaze.txt'
+        AUs_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_CLNF_AUs.txt'
+        pose_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_CLNF_pose.txt'
+        if patient_ID == 300:
+            hog_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_CLNF_hog.txt'
+        else:
+            hog_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_CLNF_hog.bin'
+        #hog_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_CLNF_hog.bin'
+        audio_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_AUDIO.wav'
+        text_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_TRANSCRIPT.csv'
 
         # read transcipt file
         text_df = pd.read_csv(text_path, sep='\t').fillna('')
