@@ -167,7 +167,7 @@ def main(dataloaders, visual_net, audio_net, text_net, evaluator, base_logger, w
                     probs = model_processing(input=data)
 
                 # predict the final score
-                pred_score = compute_score(probs, config['EVALUATOR'], args)
+                pred_score = compute_score_with_args(probs, config['EVALUATOR'], args)
                 phq_score_pred.extend([pred_score[i].item() for i in range(batch_size)])  # 1D list
                 phq_binary_pred.extend([1 if pred_score[i].item() >= config['PHQ_THRESHOLD'] else 0 for i in range(batch_size)])
                 # phq_binary_pred.extend([pred_score[i].item() for i in range(batch_size)])
@@ -397,7 +397,7 @@ if __name__ == '__main__':
     # get models
     ckpt_path = os.path.join(config['CKPTS_DIR'], config['TYPE'])
     model_type = config['TYPE']
-    visual_net, audio_net, text_net, evaluator = get_models(config['MODEL'], args, model_type, ckpt_path)
+    visual_net, audio_net, text_net, evaluator = get_models_with_arg(config['MODEL'], args, model_type, ckpt_path)
 
     main(dataloaders, visual_net, audio_net, text_net, evaluator, base_logger, writer, config['MODEL'], args, model_type, ckpt_path)
 

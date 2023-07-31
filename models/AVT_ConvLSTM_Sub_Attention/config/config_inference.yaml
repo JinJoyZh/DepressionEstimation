@@ -90,7 +90,7 @@ MODEL:
     DATE:
     PATH: model_weights
     NAME: AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention.pt
-    CUSTOM_ABSOLUTE_PATH: /home/keyan/workspace/DepressionRec/DepressionEstimation/models/AVT_ConvLSTM_Sub-Attention/model_weights/AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention.pt
+    CUSTOM_ABSOLUTE_PATH: /home/keyan/workspace/DepressionRec/DepressionEstimation/models/AVT_ConvLSTM_Sub_Attention/model_weights/AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention.pt
     INCLUDED: ['audio_net', 'visual_net', 'text_net', 'evaluator']
   VISUAL_NET:
     INPUT_DIM: 3

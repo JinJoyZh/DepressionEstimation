@@ -437,9 +437,6 @@ def sliding_window(fkps_features, gaze_features, AUs_features, pose_features,
     
     return num_frame
 
-
-
-
 if __name__ == '__main__':
 
     # output root

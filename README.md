@@ -142,7 +142,7 @@ To implement the model, please choose a model you desire in the `models` directo
 
 ```bash
 cd models/<desired model>
-# for example: cd models/AVT_ConvLSTM_Sub-Attention
+# for example: cd models/AVT_ConvLSTM_Sub_Attention
 ```
 
 For each model folder, the following structure can be found
@@ -182,7 +182,7 @@ For more complex setting, run the following code and set each value to your desi
 
 ```bash
 python main_inference.py --config_file=<path/to/config.yaml> --device=<'cuda' or 'cpu'> --gpu=<'gpu ID' can be multiple like '2, 3'> --save=<True or False>
-# for example: python main_inference.py --config_file=config/config_inference.yaml --device=cuda --gpu=2,3 --save=False
+# for example: python main_inference.py --config_file=config/config_inference_test.yaml --device=cuda --gpu=2,3 --save=False
 ```
 
 ## Train a New Model

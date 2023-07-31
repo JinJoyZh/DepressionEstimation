@@ -1,26 +1,17 @@
-import os
-import time
-import shutil
 import argparse
-from unicodedata import decimal
-import numpy as np
+import time
+
 import pandas as pd
-
-import torch
-import torch.nn as nn
-from torch.utils.tensorboard import SummaryWriter
-
-from tqdm import tqdm
-from datetime import datetime
-from scipy import stats
 from autolab_core import YamlConfig
+from torch.utils.tensorboard import SummaryWriter
+from tqdm import tqdm
 
+from models.bypass_bn import enable_running_stats, disable_running_stats
 # local functions
 from utils import *
-from models.bypass_bn import enable_running_stats, disable_running_stats
 
 
-def main(dataloaders, visual_net, audio_net, text_net, evaluator, base_logger, writer, config, args, model_type, ckpt_path):
+def main(dataloaders, visual_net, audio_net, text_net, evaluator, base_logger, writer, config, args):
 
     if not config['CRITERION']['USE_SOFT_LABEL']:
         assert config['EVALUATOR']['CLASSES_RESOLUTION'] == config['EVALUATOR']['N_CLASSES'], \
@@ -167,7 +158,7 @@ def main(dataloaders, visual_net, audio_net, text_net, evaluator, base_logger, w
                     probs = model_processing(input=data)
 
                 # predict the final score
-                pred_score = compute_score(probs, config['EVALUATOR'], args)
+                pred_score = compute_score_with_args(probs, config['EVALUATOR'], args)
                 phq_score_pred.extend([pred_score[i].item() for i in range(batch_size)])  # 1D list
                 phq_binary_pred.extend([1 if pred_score[i].item() >= config['PHQ_THRESHOLD'] else 0 for i in range(batch_size)])
                 # phq_binary_pred.extend([pred_score[i].item() for i in range(batch_size)])
@@ -464,6 +455,18 @@ def main(dataloaders, visual_net, audio_net, text_net, evaluator, base_logger, w
                    '      F1-score: {4:6.4f}').format(tpr, tnr, precision, recall, f1_score)
             log_and_print(base_logger, msg)
 
+def get_dataloader(data_config):
+    dataloaders = {}
+    mode = 'test'
+    # for test dataset, we don't need shuffle, sampler and augmentation
+    dataset = DepressionDataset(data_config[f'{mode}_ROOT_DIR'.upper()], mode,
+                                use_mel_spectrogram=data_config['USE_MEL_SPECTROGRAM'],
+                                visual_with_gaze=data_config['VISUAL_WITH_GAZE'],
+                                transform=transforms.Compose([ToTensor(mode)]))
+    dataloaders[mode] = DataLoader(dataset,
+                                   batch_size=data_config['BATCH_SIZE'],
+                                   num_workers=data_config['NUM_WORKERS'])
+    return dataloaders
 
 if __name__ == '__main__':
 
@@ -472,7 +475,7 @@ if __name__ == '__main__':
                         type=str,
                         help="path to yaml file",
                         required=False,
-                        default='config/config_inference.yaml')
+                        default='config/config_inference_test.yaml')
     parser.add_argument('--device',
                         type=str,
                         help="set up torch device: 'cpu' or 'cuda' (GPU)",
@@ -530,8 +533,8 @@ if __name__ == '__main__':
     # get models
     ckpt_path = os.path.join(config['CKPTS_DIR'], config['TYPE'])
     model_type = config['TYPE']
-    visual_net, audio_net, text_net, evaluator = get_models(config['MODEL'], args, model_type, ckpt_path)
+    visual_net, audio_net, text_net, evaluator = get_models_with_arg(config['MODEL'], args, model_type, ckpt_path)
 
-    main(dataloaders, visual_net, audio_net, text_net, evaluator, base_logger, writer, config['MODEL'], args, model_type, ckpt_path)
+    main(dataloaders, visual_net, audio_net, text_net, evaluator, base_logger, writer, config['MODEL'], args)
 
     writer.close()
