@@ -1,2 +1,5 @@
 .idea/*
 .DS_Store
+experiments/*
+models/AVT_ConvLSTM_Sub_Attention/flask/bin/*
+models/AVT_ConvLSTM_Sub_Attention/flask/output/*
