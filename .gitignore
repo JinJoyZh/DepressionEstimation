@@ -3,3 +3,4 @@
 experiments/*
 models/AVT_ConvLSTM_Sub_Attention/flask/bin/*
 models/AVT_ConvLSTM_Sub_Attention/flask/output/*
+models/AVT_ConvLSTM_Sub_Attention/flask/cache/*

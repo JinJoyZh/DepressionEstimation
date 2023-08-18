@@ -1,26 +1,34 @@
 import os
-import re
+import shutil
 import subprocess
+import sys
 import cv2
 import numpy as np
 import pandas as pd
 
+root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+sys.path.append(root_dir)
+
+from utils import get_sorted_files
+
 KEY_POINT_NUM = 68
 
-def generate_video_feature(input_dir, skip_frame):
-    exe_path = "./models/AVT_ConvLSTM_Sub_Attention/flask/bin/FaceAnalyzerVid"
-    exe = os.path.abspath(exe_path)
-    output_dir = "./models/AVT_ConvLSTM_Sub_Attention/flask/cache/video_feature"
-    output_dir = os.path.abspath(output_dir)
+def analyze_video_feature(input_dir, output_dir, skip_frame = 0):
+    root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+    exe_path = os.path.join(root_dir, "bin", "FaceAnalyzerVid")
+    if os.path.exists(output_dir):
+        shutil.rmtree(output_dir)
+        os.mkdir(output_dir)
     # extract feature with OpenFace
-    subprocess.Popen([exe, "-f", input_dir, "-out_dir", output_dir, "-skip_frame", skip_frame])
-    visual = load_video_feature(output_dir)
+    subprocess.Popen([exe_path, "-f", input_dir, "-out_dir", output_dir, "-skip_frame", skip_frame])
+    key_points_set, gaze_set = load_video_feature(output_dir)
+    return key_points_set, gaze_set
     
 def load_video_feature(csv_file_dir):
     # reshape video feature
     gaze_set = []
     key_points_set = []
-    csv_files = get_sorted_csv_files(csv_file_dir)
+    csv_files = get_sorted_files(csv_file_dir, ".csv")
     for csv_file in csv_files:
         gaze_path = csv_file_dir + "/" + csv_file
         gaze_df = pre_check(pd.read_csv(gaze_path, low_memory=False))
@@ -56,8 +64,7 @@ def load_video_feature(csv_file_dir):
         key_points_set.append(coors)
     gaze_set = np.asarray(gaze_set)
     key_points_set = np.asarray(key_points_set)
-    visual = np.concatenate((key_points_set, gaze_set), axis=1)  
-    return visual
+    return key_points_set, gaze_set
 
 def pre_check(data_df):
     data_df = data_df.apply(pd.to_numeric, errors='coerce')
@@ -65,21 +72,6 @@ def pre_check(data_df):
     data_min = data_np[np.where(~(np.isnan(data_np[:, 4:])))].min()
     data_df.where(~(np.isnan(data_df)), data_min, inplace=True)
     return data_df
-
-def get_sorted_csv_files(path):
-    file_names = os.listdir(path)
-    csv_files = []
-    for file_name in file_names:
-        if(file_name.endswith(".csv")):
-            csv_files.append(file_name)
-    def get_key(elem):
-        try:
-            index = int(re.findall(r"\d+",elem)[-1])
-            return index
-        except ValueError:
-            return -1
-    csv_files.sort(key = get_key)
-    return csv_files
 
 def eul2rot(theta) :
     R = np.array([[np.cos(theta[1])*np.cos(theta[2]),       np.sin(theta[0])*np.sin(theta[1])*np.cos(theta[2]) - np.sin(theta[2])*np.cos(theta[0]),      np.sin(theta[1])*np.cos(theta[0])*np.cos(theta[2]) + np.sin(theta[0])*np.sin(theta[2])],
@@ -100,8 +92,14 @@ if __name__ == '__main__':
     # subprocess.Popen([exe_path, "-fdir", input_dir, "-out_dir", output_dir])
 
     # analyze videos
-    exe_path = "./models/AVT_ConvLSTM_Sub_Attention/flask/bin/FaceAnalyzerVid"
-    exe = os.path.abspath(exe_path)
-    input_dir = "/home/zjy/workspace/DepressionRec/alg/OpenFace/samples/default.wmv"
-    output_dir = "/home/zjy/workspace/DepressionRec/alg/DepressionEstimation/models/AVT_ConvLSTM_Sub_Attention/flask/cache/video_feature"
-    subprocess.Popen([exe, "-f", input_dir, "-out_dir", output_dir, "-skip_frame", "2"])
+    # exe_path = "./models/AVT_ConvLSTM_Sub_Attention/flask/bin/FaceAnalyzerVid"
+    # exe = os.path.abspath(exe_path)
+    # input_dir = "/home/zjy/workspace/DepressionRec/alg/OpenFace/samples/default.wmv"
+    # output_dir = "/home/zjy/workspace/DepressionRec/alg/DepressionEstimation/models/AVT_ConvLSTM_Sub_Attention/flask/cache/video_feature"
+    # subprocess.Popen([exe, "-f", input_dir, "-out_dir", output_dir, "-skip_frame", "2"])
+
+    # current_directory = os.path.dirname(os.path.abspath(__file__))
+    # print(current_directory)
+    root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+    # path = os.path.join(root_dir, "bin", "FaceAnalyzerVid")
+    print(root_dir)

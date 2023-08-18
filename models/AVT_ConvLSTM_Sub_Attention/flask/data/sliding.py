@@ -2,11 +2,13 @@ import os
 
 import numpy as np
 
+WINDOW_SIZE     = 60    # 60s
+OVERLAP_SIZE    = 10    # 10s
 
 def sliding_window(fkps_features, gaze_features, mel_spectro, text_feature, visual_sr,
-                   window_size, overlap_size, output_root, ID):
-    frame_size = window_size * visual_sr
-    hop_size = (window_size - overlap_size) * visual_sr
+                    output_root, ID):
+    frame_size = WINDOW_SIZE * visual_sr
+    hop_size = (WINDOW_SIZE - OVERLAP_SIZE) * visual_sr
     num_frame = get_num_frame(fkps_features, frame_size, hop_size)
     text_frame_size = 10
     text_hop_size = get_text_hop_size(text_feature, text_frame_size, num_frame)
