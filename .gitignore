@@ -1,6 +1,6 @@
 .idea/*
 .DS_Store
 experiments/*
-models/AVT_ConvLSTM_Sub_Attention/flask/bin/*
-models/AVT_ConvLSTM_Sub_Attention/flask/output/*
-models/AVT_ConvLSTM_Sub_Attention/flask/cache/*
+models/AVT_ConvLSTM_Sub_Attention/service/bin/*
+models/AVT_ConvLSTM_Sub_Attention/service/output/*
+models/AVT_ConvLSTM_Sub_Attention/service/cache/*

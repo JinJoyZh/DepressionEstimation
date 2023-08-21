@@ -31,7 +31,7 @@ from inference import model_processing
 # │           └── keypoints
 
 
-class MultimodalDiagnosticService:
+class MultimodalDiagnostic:
 
     lastest_video_file_num = 0
 

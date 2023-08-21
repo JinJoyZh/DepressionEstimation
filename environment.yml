@@ -1,4 +1,4 @@
-name: pytorch-transformer
+name: DepressionRecognition
 channels:
   - pytorch
   - anaconda
