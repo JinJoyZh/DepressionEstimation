@@ -5,6 +5,7 @@ from autolab_core import YamlConfig
 
 from models.AVT_ConvLSTM_Sub_Attention.utils import init_seed, get_logger, get_models
 
+
 def model_processing(input, config, args):
     start_time = time.time()
     # get logger os.path.join(config['OUTPUT_DIR'], f'{config['TYPE']}_{config['LOG_TITLE']}.log')
@@ -41,6 +42,8 @@ def model_processing(input, config, args):
     # combine all features into shape: B, C=1, num_modal, audio net output dim
     all_features = torch.stack([visual_features, audio_features, text_features], dim=1).unsqueeze(dim=1)
     probs = evaluator(all_features)
+    end_time = time.time()
+    print("耗时: {:.2f}秒".format(end_time - start_time))
     """ 
     Arguments:
         'features' should have size (batch_size, channels(=1), num_modal, feature_dim of each branch)
@@ -73,7 +76,7 @@ def make_inderences():
     # initialize random seed for torch and numpy
     init_seed(config['MANUAL_SEED'])
     #TODO get inputs
-
+    
 
 
 if __name__ == '__main__':

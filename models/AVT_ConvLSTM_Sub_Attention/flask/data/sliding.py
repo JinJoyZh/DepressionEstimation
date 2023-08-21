@@ -5,8 +5,7 @@ import numpy as np
 WINDOW_SIZE     = 60    # 60s
 OVERLAP_SIZE    = 10    # 10s
 
-def sliding_window(fkps_features, gaze_features, mel_spectro, text_feature, visual_sr,
-                    output_root, ID):
+def sliding_window(fkps_features, gaze_features, mel_spectro, text_feature, visual_sr):
     frame_size = WINDOW_SIZE * visual_sr
     hop_size = (WINDOW_SIZE - OVERLAP_SIZE) * visual_sr
     num_frame = get_num_frame(fkps_features, frame_size, hop_size)
@@ -21,13 +20,7 @@ def sliding_window(fkps_features, gaze_features, mel_spectro, text_feature, visu
         frame_sample_text = text_padding(text_feature[i * text_hop_size:i * text_hop_size + text_frame_size],
                                          text_frame_size)
 
-        # start storing
-        np.save(os.path.join(output_root, 'facial_keypoints', f'{ID}-{i:02}_kps.npy'), frame_sample_fkps)
-        np.save(os.path.join(output_root, 'gaze_vectors', f'{ID}-{i:02}_gaze.npy'), frame_sample_gaze)
-        np.save(os.path.join(output_root, 'audio', 'mel-spectrogram', f'{ID}-{i:02}_audio.npy'), frame_sample_mspec)
-        np.save(os.path.join(output_root, 'text', f'{ID}-{i:02}_text.npy'), frame_sample_text)
-
-    return num_frame
+    return frame_sample_fkps, frame_sample_gaze, frame_sample_mspec, frame_sample_text
 
 def get_text_hop_size(text, frame_size, num_frame):
     T = text.shape[0]
