@@ -53,6 +53,7 @@ class MultimodalDiagnosticService:
 
     def generate_video_features(self, input_path, skip_frame = 0):
         time_zone = int(re.findall(r"\d+",input_path)[-1])
+        time_zone = str(time_zone)
         cache_dir = os.path.join(self.VIDEO_CACHE, time_zone)
         key_points_set, gaze_set = analyze_video_feature(input_path, cache_dir, skip_frame)
         key_point_feature_path = os.path.join(self.KEYPOINT_CACHE, "video" + time_zone + ".npy")
