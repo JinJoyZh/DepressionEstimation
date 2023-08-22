@@ -51,6 +51,8 @@ class MultimodalDiagnostic:
             if not os.path.exists(dir) :
                 os.makedirs(dir) 
 
+    #input_path 视频文件的绝对路径。视频文件格式支持mp4, wmv
+    #skip_frame 分析视频过程中跳帧的数量。可以增加改数值减小算力消耗，但不推荐这么做
     def generate_video_features(self, input_path, skip_frame = 0):
         time_zone = int(re.findall(r"\d+",input_path)[-1])
         time_zone = str(time_zone)
@@ -67,6 +69,11 @@ class MultimodalDiagnostic:
     def _generate_text_features(self, transcrpit_file_path):
         return analyze_text_feature(transcrpit_file_path)
     
+    # @Param 
+    # root_path 存放用户采访数据的根目录interviewer_ID_timezone的绝对路径
+    # visual_sr 视频帧率
+    # @return
+    # probs     PHQ值
     def generate_phq(self, root_path, visual_sr):
         # set up torch device: 'cpu' or 'cuda' (GPU)
         args = []
