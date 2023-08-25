@@ -1,16 +1,21 @@
 import os
 import time
 import torch
+import sys
 from autolab_core import YamlConfig
 
-from models.AVT_ConvLSTM_Sub_Attention.utils import init_seed, get_logger, get_models
+sys.path.append("..") 
+from utils import get_models
+
+# root_dir = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+# sys.path.append(root_dir)
 
 
 def model_processing(input, config, args):
     start_time = time.time()
     # get logger os.path.join(config['OUTPUT_DIR'], f'{config['TYPE']}_{config['LOG_TITLE']}.log')
     file_name = os.path.join(config['OUTPUT_DIR'], '{}.log'.format(config['TYPE']))
-    base_logger = get_logger(file_name, config['LOG_TITLE'])
+    # base_logger = get_logger(file_name, config['LOG_TITLE'])
     # get models
     ckpt_path = os.path.join(config['CKPTS_DIR'], config['TYPE'])
     model_type = config['TYPE']

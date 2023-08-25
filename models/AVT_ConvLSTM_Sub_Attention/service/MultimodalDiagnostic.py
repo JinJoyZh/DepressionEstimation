@@ -3,18 +3,21 @@ import os
 import re
 import shutil
 import sys
+import time
 import numpy as np
+import pandas as pd
 from autolab_core import YamlConfig
+import torch
 
 root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 sys.path.append(root_dir)
 
-from utils import get_sorted_files
+from wheels import get_sorted_files
 from data.audio import analyze_audio_feature
 from data.text import analyze_text_feature
 from data.video import analyze_video_feature
 from data.sliding import sliding_window
-from utils import init_seed
+from wheels import init_seed
 from inference import model_processing
 
 # 访谈记录数据存放格式
@@ -30,17 +33,15 @@ from inference import model_processing
 # │           ├── gaze
 # │           └── keypoints
 
-
 class MultimodalDiagnostic:
 
     lastest_video_file_num = 0
 
+    # user_data_dir 存放访谈记录数据的绝对路径
     def __init__(self, user_data_dir):
         self.USER_DATA_DIR = user_data_dir
         self.USER_ID = user_data_dir.split("_")[-2]
-        cache_dir = os.path.dirname(os.path.abspath(__file__))
-        cache_dir = os.path.join(cache_dir, "cache", self.USER_ID)
-        self.CACHE_DIR = cache_dir
+        self.CACHE_DIR = os.path.join(user_data_dir, "cache")
         self.VIDEO_CACHE = os.path.join(self.CACHE_DIR, "video")
         self.GAZE_CACHE = os.path.join(self.VIDEO_CACHE, "gaze")
         self.KEYPOINT_CACHE = os.path.join(self.VIDEO_CACHE, "keypoints")
@@ -51,17 +52,18 @@ class MultimodalDiagnostic:
             if not os.path.exists(dir) :
                 os.makedirs(dir) 
 
-    #input_path 视频文件的绝对路径。视频文件格式支持mp4, wmv
+    #ivideo_file_name 视频文件全名。视频文件格式支持mp4, wmv
     #skip_frame 分析视频过程中跳帧的数量。可以增加改数值减小算力消耗，但不推荐这么做
-    def generate_video_features(self, input_path, skip_frame = 0):
+    def generate_video_features(self, video_file_name, skip_frame = '0'):
+        input_path = os.path.join(self.USER_DATA_DIR, video_file_name)
         time_zone = int(re.findall(r"\d+",input_path)[-1])
         time_zone = str(time_zone)
         cache_dir = os.path.join(self.VIDEO_CACHE, time_zone)
         key_points_set, gaze_set = analyze_video_feature(input_path, cache_dir, skip_frame)
-        key_point_feature_path = os.path.join(self.KEYPOINT_CACHE, "video" + time_zone + ".npy")
-        np.save(key_points_set, key_point_feature_path)
+        key_point_feature_path = os.path.join(self.KEYPOINT_CACHE, "video_" + time_zone + ".npy")
+        np.save(key_point_feature_path, key_points_set)
         gaze_feature_path = os.path.join(self.GAZE_CACHE, "gaze_" + time_zone + ".npy")
-        np.save(gaze_set, gaze_feature_path)
+        np.save(gaze_feature_path, gaze_set)
 
     def _generate_audio_features(self, root_path):
         return analyze_audio_feature(root_path)
@@ -70,15 +72,17 @@ class MultimodalDiagnostic:
         return analyze_text_feature(transcrpit_file_path)
     
     # @Param 
-    # root_path 存放用户采访数据的根目录interviewer_ID_timezone的绝对路径
     # visual_sr 视频帧率
     # @return
     # probs     PHQ值
-    def generate_phq(self, root_path, visual_sr):
+    def generate_phq(self, visual_sr):
+        print("The Multimodal analysis starts!")
+        start = time.time()
         # set up torch device: 'cpu' or 'cuda' (GPU)
-        args = []
-        args.device = 'cuda'
-        config_file = '../config/config_phq-subscores.yaml'
+        args = self.Args()
+        args.device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
+        args.gpu = '2, 3'
+        config_file = os.path.join(root_dir, 'config/config_phq-subscores.yaml')
         config = YamlConfig(config_file)
         # create the output folder (name of experiment) for storing model result such as logger information
         if not os.path.exists(config['OUTPUT_DIR']):
@@ -91,10 +95,10 @@ class MultimodalDiagnostic:
         # initialize random seed for torch and numpy
         init_seed(config['MANUAL_SEED'])
         # load audio feature
-        mel_spectro = self._generate_audio_features(root_path)
+        mel_spectro = self._generate_audio_features(self.USER_DATA_DIR)
         # load text feature
         transcrpit_file_name = "transcript.csv"
-        transcrpit_file_path = os.path.join(root_path, transcrpit_file_name)
+        transcrpit_file_path = os.path.join(self.USER_DATA_DIR, transcrpit_file_name)
         text_features = self._generate_text_features(transcrpit_file_path)
         # load video feature
         gaze_features = self._load_video_feature(self.GAZE_CACHE)
@@ -103,32 +107,44 @@ class MultimodalDiagnostic:
         visual_feature = np.concatenate((frame_sample_fkps, frame_sample_gaze), axis=1)
         input = {'visual': visual_feature, 'audio': frame_sample_mspec, 'text': frame_sample_text}
         probs = model_processing(input, config, args)
+        end = time.time()
+        time_cost = str(end - start)
+        print("final PHQ: " + str(probs))
+        print("Multimodal analysis ends. Time cost: " + time_cost + " seconds")
         #delete cache
         shutil.rmtree(self.CACHE_DIR)
         return probs
 
-
-    def _load_video_feature(root_dir):
+    def _load_video_feature(self, root_dir):
         files = get_sorted_files(root_dir, ".npy")
         features = np.asarray([])
         for file in files:
-            data = np.load(file)
+            path = os.path.join(root_dir, file)
+            data = np.load(path)
             if features.shape == (0, ):
                 features = data
             else:
                 features = np.append(features, data, axis = 0)
         return features
-        
 
-
+    # 添加新的访谈文字记录    
+    def transcript(self, start_time, end_time, value):
+        file_path = os.path.join(self.USER_DATA_DIR, 'transcript.csv')
+        city = pd.DataFrame([[start_time, end_time, value]], columns=['start_time', 'end_time', 'value'])
+        need_header = True
+        if os.path.isfile(file_path):
+            need_header = False
+        city.to_csv(file_path, mode = 'a', header = need_header)
+    
+    class Args(object):
+        pass
+    
 if __name__ == '__main__':
-    # user_data_dir = "aas_1234_as"
-    # USER_DATA_DIR = user_data_dir
-    # USER_ID = user_data_dir.split("_")[-2]
-    # cache_dir = os.path.dirname(os.path.abspath(__file__))
-    # cache_dir = os.path.join(cache_dir, "cache", USER_ID)
-    # print(cache_dir)
-    # root_dir = os.path.abspath(os.path.dirname(__file__))
-    # print(root_dir)
-    a = np.load("/home/zjy/workspace/DepressionRec/dataset/DAIC_WOZ-generated_database_V2/test/clipped_data/gaze_vectors/300-00_gaze.npy")
-    print(a.shape)
+    user_data_dir = "/home/zjy/workspace/tmp/interviewee_12345_1692723605"
+    serivce = MultimodalDiagnostic(user_data_dir)
+    print('start to get video feature')
+    serivce.generate_video_features("vdieo_1692758150.wmv")
+    serivce.generate_video_features("video_1692757670.wmv")
+    serivce.generate_video_features("video_1692757850.wmv")
+    video_frame_rate = 30
+    phq = serivce.generate_phq(30)

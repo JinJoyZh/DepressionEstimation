@@ -1,19 +1,19 @@
 import os
 import shutil
-import subprocess
 import sys
 import cv2
+import time
 import numpy as np
 import pandas as pd
 
 root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 sys.path.append(root_dir)
 
-from utils import get_sorted_files
+from wheels import get_sorted_files
 
 KEY_POINT_NUM = 68
 
-def analyze_video_feature(input_dir, output_dir, skip_frame = 0):
+def analyze_video_feature(input_dir, output_dir, skip_frame ='0'):
     # limit OpenBlas to accelerate in single thread
     os.environ['OMP_NUM_THREADS'] = '1'
     os.environ['VECLIB_MAXIMUM_THREADS'] = '1'
@@ -23,11 +23,15 @@ def analyze_video_feature(input_dir, output_dir, skip_frame = 0):
         shutil.rmtree(output_dir)
         os.mkdir(output_dir)
     # extract feature with OpenFace
-    subprocess.Popen([exe_path, "-f", input_dir, "-out_dir", output_dir, "-skip_frame", skip_frame])
-    key_points_set, gaze_set = load_video_feature(output_dir)
+    cmd = exe_path + " -f " + input_dir + " -out_dir " + output_dir +  " -skip_frame " + skip_frame
+    os.system(cmd)
+    # subprocess.Popen([exe_path, "-f", input_dir, "-out_dir", output_dir, "-skip_frame", skip_frame])
+    key_points_set, gaze_set = record_video_feature(output_dir)
     return key_points_set, gaze_set
     
-def load_video_feature(csv_file_dir):
+def record_video_feature(csv_file_dir):
+    print('record_video_feature start')
+    start = time.time()
     # reshape video feature
     gaze_set = []
     key_points_set = []
@@ -67,6 +71,8 @@ def load_video_feature(csv_file_dir):
         key_points_set.append(coors)
     gaze_set = np.asarray(gaze_set)
     key_points_set = np.asarray(key_points_set)
+    end = time.time()
+    print('record_video_feature end, time cost ' + str(end - start) + " seconds")
     return key_points_set, gaze_set
 
 def pre_check(data_df):

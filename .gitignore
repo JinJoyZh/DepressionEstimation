@@ -4,3 +4,4 @@ experiments/*
 models/AVT_ConvLSTM_Sub_Attention/service/bin/*
 models/AVT_ConvLSTM_Sub_Attention/service/output/*
 models/AVT_ConvLSTM_Sub_Attention/service/cache/*
+*.pyc

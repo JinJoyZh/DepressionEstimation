@@ -5,12 +5,11 @@ import numpy as np
 import wave
 
 def analyze_audio_feature(root_path):
-    global audio_sr
     dir_tree = os.walk(root_path)
     merged_audio = []
     for root, dirs, files in dir_tree:
         for name in files:
-            if name.endwith(".wav"):
+            if name.endswith(".wav"):
                 audio_file_path = os.path.join(root, name)
                 wavefile = wave.open(audio_file_path)
                 audio_sr = wavefile.getframerate()
@@ -18,7 +17,7 @@ def analyze_audio_feature(root_path):
                 signal = np.frombuffer(wavefile.readframes(n_samples), dtype=np.short)
                 signal = signal.astype(float)
                 merged_audio = np.hstack((merged_audio, signal))
-    mel_spectro = normalize(convert_mel_spectrogram(merged_audio, audio_sr, frame_size=2048, hop_size=533, num_mel_bands=80))
+    mel_spectro = normalize(convert_mel_spectrogram(merged_audio, audio_sr))
     return mel_spectro
 
 def convert_mel_spectrogram(audio, audio_sr, frame_size=2048, hop_size=533, num_mel_bands=80):
