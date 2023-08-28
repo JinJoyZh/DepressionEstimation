@@ -298,8 +298,8 @@ class ConvLSTM_Visual(nn.Module):
         x = self.conv(x)
         x = self.pool(x.squeeze())
         x = self.drop(x)
-        print("aaaaa")
-        print(x.size())
+        if batch == 1:
+            x = x.unsqueeze(0)
         x = x.permute(0, 2, 1).contiguous()
         x, _ = self.lstm(x)                                 # output shape: (batch, width//stride(pool), lstm_hidden*2) 5x600x128
         x = self.fc(x[:, -1, :].reshape(batch, -1))         # output shape: (batch, output_dim)

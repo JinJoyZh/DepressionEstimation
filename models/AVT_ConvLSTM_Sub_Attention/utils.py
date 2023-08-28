@@ -1,6 +1,7 @@
 from itertools import count
 from collections import OrderedDict
 import os
+import re
 import sys
 import random
 import logging
@@ -251,6 +252,7 @@ def get_models(model_config, args, model_type=None, ckpt_path=None):
             print("Loading Deep Visual Net weights from {}".format(weights_path))
             new_state_dict = OrderedDict()
             for k, v in checkpoint['visual_net'].items():
+                #k = 'module.' + k
                 new_state_dict[k] = v
             visual_net.load_state_dict(new_state_dict)
 
@@ -258,6 +260,7 @@ def get_models(model_config, args, model_type=None, ckpt_path=None):
             print("Loading Deep Audio Net weights from {}".format(weights_path))
             new_state_dict = OrderedDict()
             for k, v in checkpoint['audio_net'].items():
+                #k = 'module.' + k
                 new_state_dict[k] = v
             audio_net.load_state_dict(new_state_dict)
         
@@ -265,6 +268,7 @@ def get_models(model_config, args, model_type=None, ckpt_path=None):
             print("Loading Deep Text Net weights from {}".format(weights_path))
             new_state_dict = OrderedDict()
             for k, v in checkpoint['text_net'].items():
+                #k = 'module.' + k
                 new_state_dict[k] = v
             text_net.load_state_dict(new_state_dict)
 
@@ -276,6 +280,7 @@ def get_models(model_config, args, model_type=None, ckpt_path=None):
             print("Loading MUSDL weights from {}".format(weights_path))
             new_state_dict = OrderedDict()
             for k, v in checkpoint['evaluator'].items():
+                #k = 'module.' + k
                 new_state_dict[k] = v
             evaluator.load_state_dict(new_state_dict)
 
@@ -542,5 +547,20 @@ def get_regression_scores(gt, pred):
     rmse = np.sqrt(mse)  # or mse**(0.5)         # root mean square error
     r2 = metrics.r2_score(gt, pred)              # Coefficient of determination
     return mae, mse, rmse, r2
+
+def get_sorted_files(path, suffix):
+    file_names = os.listdir(path)
+    csv_files = []
+    for file_name in file_names:
+        if(file_name.endswith(suffix)):
+            csv_files.append(file_name)
+    def get_key(elem):
+        try:
+            index = int(re.findall(r"\d+",elem)[-1])
+            return index
+        except ValueError:
+            return -1
+    csv_files.sort(key = get_key)
+    return csv_files
 
 

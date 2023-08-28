@@ -27,7 +27,7 @@ def model_processing(input, config, args):
     torch.set_grad_enabled(False)
     # get facial visual feature with Deep Visual Net'
     # input shape for visual_net must be (B, C, F, T) = (batch_size, channels, features, time series)
-    B, T, F, C = input['visual'].shapes
+    B, T, F, C = input['visual'].shape
     visual_input = input['visual'].permute(0, 3, 2, 1).contiguous()
     visual_features = visual_net(visual_input.to(args.device))  # output dim: [B, visual net output dim]
 
@@ -61,26 +61,6 @@ def model_processing(input, config, args):
             'probs' a torch matrices with shape: (batch size, class resolution)
     """
     return probs
-
-
-
-# def make_inderences():
-#     # set up torch device: 'cpu' or 'cuda' (GPU)
-#     args = []
-#     args.device = 'cuda'
-#     config_file = '../config/config_phq-subscores.yaml'
-#     config = YamlConfig(config_file)
-#     # create the output folder (name of experiment) for storing model result such as logger information
-#     if not os.path.exists(config['OUTPUT_DIR']):
-#         os.mkdir(config['OUTPUT_DIR'])
-#     # print configuration
-#     print('=' * 40)
-#     print(config.file_contents)
-#     config.save(os.path.join(config['OUTPUT_DIR'], config['SAVE_CONFIG_NAME']))
-#     print('=' * 40)
-#     # initialize random seed for torch and numpy
-#     init_seed(config['MANUAL_SEED'])
-#     #TODO get inputs
     
 
 

@@ -6,10 +6,11 @@ import time
 import numpy as np
 import pandas as pd
 
-root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+root_dir = os.path.abspath(os.path.dirname(__file__))
+root_dir = os.path.abspath(os.path.join(root_dir, "../.."))
 sys.path.append(root_dir)
 
-from wheels import get_sorted_files
+from utils import get_sorted_files
 
 KEY_POINT_NUM = 68
 

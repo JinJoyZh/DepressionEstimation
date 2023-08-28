@@ -7,5 +7,7 @@ models/AVT_ConvLSTM_Sub_Attention/service/cache/*
 models/AVT_ConvLSTM_Sub_Attention/inference_DepressionAnalysis_AVT_PHQ-score/*
 models/AVT_ConvLSTM_Sub_Attention/exp_AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention+Soft/*
 models/AVT_ConvLSTM_Sub_Attention/model_weights/*
+models/AVT_ConvLSTM_Sub_Attention/service/data/__pycache__/*
+models/AVT_ConvLSTM_Sub_Attention/dataset/__pycache__/*
 *.pyc
 inference_DepressionAnalysis_AVT_PHQ-score/*

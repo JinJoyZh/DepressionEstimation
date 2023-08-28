@@ -12,13 +12,12 @@ import torch
 root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 sys.path.append(root_dir)
 
-from wheels import get_sorted_files
 from data.audio import analyze_audio_feature
 from data.text import analyze_text_feature
 from data.video import analyze_video_feature
 from data.sliding import sliding_window
-from wheels import init_seed
 from inference import model_processing
+from utils import compute_score, get_sorted_files, init_seed
 
 # 访谈记录数据存放格式
 # ├─interviewer_ID_timezone     //单次访谈的根目录存放根目录
@@ -78,12 +77,14 @@ class MultimodalDiagnostic:
     def generate_phq(self, visual_sr):
         print("The Multimodal analysis starts!")
         start = time.time()
+        config_file = os.path.join(root_dir, 'config/config_phq-subscores.yaml')
+        config = YamlConfig(config_file)
+        phq_score_pred = []
+        phq_binary_pred = []
         # set up torch device: 'cpu' or 'cuda' (GPU)
         args = self.Args()
         args.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         args.gpu = '0'
-        config_file = os.path.join(root_dir, 'config/config_phq-subscores.yaml')
-        config = YamlConfig(config_file)
         # create the output folder (name of experiment) for storing model result such as logger information
         if not os.path.exists(config['OUTPUT_DIR']):
             os.mkdir(config['OUTPUT_DIR'])
@@ -110,13 +111,20 @@ class MultimodalDiagnostic:
         frame_sample_text = torch.from_numpy(np.asarray([frame_sample_text], dtype='float32'))
         input = {'visual': visual_feature, 'audio': frame_sample_mspec, 'text': frame_sample_text}
         probs = model_processing(input, config, args)
+        # predict the final score
+        config = config['MODEL']
+        pred_score = compute_score(probs, config['EVALUATOR'], args)
+        print("pred_score: " + str(len(pred_score)))
+        phq_score_pred.extend([pred_score[i].item() for i in range(1)])  # 1D list
+        print("phq_score_pred: " + str(phq_score_pred))
+        phq_binary_pred.extend([1 if pred_score[i].item() >= config['PHQ_THRESHOLD'] else 0 for i in range(1)])
+        print("phq_binary_pred: " + str(phq_binary_pred))
         end = time.time()
         time_cost = str(end - start)
-        print("final PHQ: " + str(probs))
         print("Multimodal analysis ends. Time cost: " + time_cost + " seconds")
         #delete cache
         shutil.rmtree(self.CACHE_DIR)
-        return probs
+        return phq_score_pred[0], phq_binary_pred[0]
 
     def _load_video_feature(self, root_dir):
         files = get_sorted_files(root_dir, ".npy")
@@ -150,4 +158,4 @@ if __name__ == '__main__':
     serivce.generate_video_features("video_1692757670.wmv")
     serivce.generate_video_features("video_1692757850.wmv")
     video_frame_rate = 30
-    phq = serivce.generate_phq(30)
+    phq_score_pred, phq_binary_pred = serivce.generate_phq(30)
