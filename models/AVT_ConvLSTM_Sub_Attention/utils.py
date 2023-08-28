@@ -94,16 +94,16 @@ def get_dataloaders(data_config):
                                            batch_size=data_config['BATCH_SIZE'],
                                            num_workers=data_config['NUM_WORKERS'])
 
-        else:
-            dataset = DepressionDataset(data_config[f'{mode}_ROOT_DIR'.upper()], mode,
-                                        use_mel_spectrogram=data_config['USE_MEL_SPECTROGRAM'],
-                                        visual_with_gaze=data_config['VISUAL_WITH_GAZE'],
-                                        transform=transforms.Compose([ToTensor(mode)]))  # Rescale(data_config['RESCALE_SIZE']), Padding(data_config['PADDING']) + Augmentation TODO !!!
-            sampler = get_sampler_phq_score(dataset.phq_score_gt)
-            dataloaders[mode] = DataLoader(dataset,
-                                           batch_size=data_config['BATCH_SIZE'],
-                                           num_workers=data_config['NUM_WORKERS'], 
-                                           sampler=sampler)
+        # else:
+        #     dataset = DepressionDataset(data_config[f'{mode}_ROOT_DIR'.upper()], mode,
+        #                                 use_mel_spectrogram=data_config['USE_MEL_SPECTROGRAM'],
+        #                                 visual_with_gaze=data_config['VISUAL_WITH_GAZE'],
+        #                                 transform=transforms.Compose([ToTensor(mode)]))  # Rescale(data_config['RESCALE_SIZE']), Padding(data_config['PADDING']) + Augmentation TODO !!!
+        #     sampler = get_sampler_phq_score(dataset.phq_score_gt)
+        #     dataloaders[mode] = DataLoader(dataset,
+        #                                    batch_size=data_config['BATCH_SIZE'],
+        #                                    num_workers=data_config['NUM_WORKERS'], 
+        #                                    sampler=sampler)
 
     return dataloaders
 
@@ -251,24 +251,21 @@ def get_models(model_config, args, model_type=None, ckpt_path=None):
             print("Loading Deep Visual Net weights from {}".format(weights_path))
             new_state_dict = OrderedDict()
             for k, v in checkpoint['visual_net'].items():
-                name = "module." + k
-                new_state_dict[name] = v
+                new_state_dict[k] = v
             visual_net.load_state_dict(new_state_dict)
 
         if 'audio_net' in model_config['WEIGHTS']['INCLUDED']:
             print("Loading Deep Audio Net weights from {}".format(weights_path))
             new_state_dict = OrderedDict()
             for k, v in checkpoint['audio_net'].items():
-                name = "module." + k
-                new_state_dict[name] = v
+                new_state_dict[k] = v
             audio_net.load_state_dict(new_state_dict)
         
         if 'text_net' in model_config['WEIGHTS']['INCLUDED']:
             print("Loading Deep Text Net weights from {}".format(weights_path))
             new_state_dict = OrderedDict()
             for k, v in checkpoint['text_net'].items():
-                name = "module." + k
-                new_state_dict[name] = v
+                new_state_dict[k] = v
             text_net.load_state_dict(new_state_dict)
 
         # if 'fusion_net' in model_config['WEIGHTS']['INCLUDED']:
@@ -279,8 +276,7 @@ def get_models(model_config, args, model_type=None, ckpt_path=None):
             print("Loading MUSDL weights from {}".format(weights_path))
             new_state_dict = OrderedDict()
             for k, v in checkpoint['evaluator'].items():
-                name = "module." + k
-                new_state_dict[name] = v
+                new_state_dict[k] = v
             evaluator.load_state_dict(new_state_dict)
 
     return visual_net, audio_net, text_net, evaluator  # fusion_net

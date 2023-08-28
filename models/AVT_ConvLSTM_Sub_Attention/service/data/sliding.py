@@ -19,7 +19,6 @@ def sliding_window(fkps_features, gaze_features, mel_spectro, text_feature, visu
         frame_sample_mspec = audio_padding(mel_spectro[:, i * hop_size:i * hop_size + frame_size], frame_size)
         frame_sample_text = text_padding(text_feature[i * text_hop_size:i * text_hop_size + text_frame_size],
                                          text_frame_size)
-
     return frame_sample_fkps, frame_sample_gaze, frame_sample_mspec, frame_sample_text
 
 def get_text_hop_size(text, frame_size, num_frame):

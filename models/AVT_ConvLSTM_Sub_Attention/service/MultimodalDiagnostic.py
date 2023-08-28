@@ -80,8 +80,8 @@ class MultimodalDiagnostic:
         start = time.time()
         # set up torch device: 'cpu' or 'cuda' (GPU)
         args = self.Args()
-        args.device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
-        args.gpu = '2, 3'
+        args.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        args.gpu = '0'
         config_file = os.path.join(root_dir, 'config/config_phq-subscores.yaml')
         config = YamlConfig(config_file)
         # create the output folder (name of experiment) for storing model result such as logger information
@@ -105,6 +105,9 @@ class MultimodalDiagnostic:
         keypoint_features = self._load_video_feature(self.KEYPOINT_CACHE)
         frame_sample_fkps, frame_sample_gaze, frame_sample_mspec, frame_sample_text = sliding_window(keypoint_features, gaze_features, mel_spectro, text_features, visual_sr)
         visual_feature = np.concatenate((frame_sample_fkps, frame_sample_gaze), axis=1)
+        visual_feature = torch.from_numpy(np.asarray([visual_feature], dtype='float32'))
+        frame_sample_mspec = torch.from_numpy(np.asarray([frame_sample_mspec], dtype='float32'))
+        frame_sample_text = torch.from_numpy(np.asarray([frame_sample_text], dtype='float32'))
         input = {'visual': visual_feature, 'audio': frame_sample_mspec, 'text': frame_sample_text}
         probs = model_processing(input, config, args)
         end = time.time()

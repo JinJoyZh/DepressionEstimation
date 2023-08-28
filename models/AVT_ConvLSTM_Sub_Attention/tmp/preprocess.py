@@ -305,23 +305,23 @@ if __name__ == '__main__':
     #TODO compute paitent id
     patient_ID = '001'
     # output root
-    root = '/home/keyan/workspace/DepressionRec/dataset'
+    root = '/home/zjy/workspace/DepressionRec/dataset'
     root_dir = os.path.join(root, 'DAIC_WOZ-generated_database_tmp', 'test')
     create_folders(root_dir)
     np.random.seed(1)
 
     # initialization
-    use_embed_large = hub.load("/home/keyan/workspace/DepressionRec/models/universal-sentence-encoder-large_5")
+    use_embed_large = hub.load("/home/zjy/workspace/DepressionRec/models/universal-sentence-encoder-large_5")
     window_size = 60  # 60s
     overlap_size = 10  # 10s
 
     # extract training gt details
 
     # get all files path of participant
-    keypoints_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_CLNF_features3D.txt'
-    gaze_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_CLNF_gaze.txt'
-    audio_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_AUDIO.wav'
-    text_path = f'/home/keyan/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_TRANSCRIPT.csv'
+    keypoints_path = f'/home/zjy/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_CLNF_features3D.txt'
+    gaze_path = f'/home/zjy/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_CLNF_gaze.txt'
+    audio_path = f'/home/zjy/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_AUDIO.wav'
+    text_path = f'/home/zjy/workspace/DepressionRec/dataset/DAIC-WOZ_dataset/{patient_ID}_TRANSCRIPT.csv'
 
     # read transcipt file
     text_df = pd.read_csv(text_path, sep='\t').fillna('')

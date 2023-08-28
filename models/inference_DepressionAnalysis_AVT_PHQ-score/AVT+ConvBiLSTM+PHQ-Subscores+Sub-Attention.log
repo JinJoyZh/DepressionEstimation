@@ -1,0 +1,3 @@
+------------------------------------------------------Depression Detection with audio + visual + text data, ConvBiLSTM, PHQ-Subscores, Fusion-Sub-Attention, KLDivLoss, ASAM------------------------------------------------------
+Epoch: 0  Current Best Test for f1-score: 0 at epoch 0
+Epoch: 0  Current Best Test for accuracy: 0 at epoch 0
