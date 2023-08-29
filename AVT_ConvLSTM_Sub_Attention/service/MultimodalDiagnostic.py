@@ -160,5 +160,6 @@ if __name__ == '__main__':
     serivce.generate_video_features("vdieo_1692758150.wmv")
     serivce.generate_video_features("video_1692757670.wmv")
     serivce.generate_video_features("video_1692757850.wmv")
+    serivce.generate_video_features("video_1693300015.wmv")
     video_frame_rate = 30
     phq_score_pred, phq_binary_pred = serivce.generate_phq(30)

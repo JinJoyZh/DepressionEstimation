@@ -1,22 +1,25 @@
 import os
+import sys
 
 import librosa
 import numpy as np
 import wave
 
+root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+sys.path.append(root_dir)
+from utils import get_sorted_files
+
 def analyze_audio_feature(root_path):
-    dir_tree = os.walk(root_path)
     merged_audio = []
-    for root, dirs, files in dir_tree:
-        for name in files:
-            if name.endswith(".wav"):
-                audio_file_path = os.path.join(root, name)
-                wavefile = wave.open(audio_file_path)
-                audio_sr = wavefile.getframerate()
-                n_samples = wavefile.getnframes()
-                signal = np.frombuffer(wavefile.readframes(n_samples), dtype=np.short)
-                signal = signal.astype(float)
-                merged_audio = np.hstack((merged_audio, signal))
+    files = get_sorted_files(root_path, ".wav")
+    for name in files:
+        audio_file_path = os.path.join(root_path, name)
+        wavefile = wave.open(audio_file_path)
+        audio_sr = wavefile.getframerate()
+        n_samples = wavefile.getnframes()
+        signal = np.frombuffer(wavefile.readframes(n_samples), dtype=np.short)
+        signal = signal.astype(float)
+        merged_audio = np.hstack((merged_audio, signal))
     mel_spectro = normalize(convert_mel_spectrogram(merged_audio, audio_sr))
     return mel_spectro
 
