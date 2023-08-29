@@ -2,7 +2,6 @@ import os
 import time
 import torch
 import sys
-from autolab_core import YamlConfig
 
 sys.path.append("..") 
 from utils import get_models

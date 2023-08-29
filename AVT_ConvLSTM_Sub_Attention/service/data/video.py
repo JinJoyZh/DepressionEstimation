@@ -24,9 +24,10 @@ def analyze_video_feature(input_dir, output_dir, skip_frame ='0'):
         shutil.rmtree(output_dir)
         os.mkdir(output_dir)
     # extract feature with OpenFace
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
     cmd = exe_path + " -f " + input_dir + " -out_dir " + output_dir +  " -skip_frame " + skip_frame
     os.system(cmd)
-    # subprocess.Popen([exe_path, "-f", input_dir, "-out_dir", output_dir, "-skip_frame", skip_frame])
     key_points_set, gaze_set = record_video_feature(output_dir)
     return key_points_set, gaze_set
     

@@ -202,52 +202,12 @@ def get_models(model_config, args, model_type=None, ckpt_path=None):
     # fusion_net = fusion_net.to(args.device)
     evaluator = evaluator.to(args.device)
 
-    # find the model weights
-    if model_config['WEIGHTS']['TYPE'].lower() == 'last':
-        assert ckpt_path is not None, \
-            "'ckpt_path' must be given for the function 'get_models' "
-        weights_path = find_last_ckpts(path=ckpt_path,
-                                       key=model_type,
-                                       date=model_config['WEIGHTS']['DATE'])
-
-    elif model_config['WEIGHTS']['TYPE'].lower() == 'absolute_path':
-        assert model_config['WEIGHTS']['CUSTOM_ABSOLUTE_PATH'] is not None, \
-            "'CUSTOM_ABSOLUTE_PATH' (absolute path to wights file) in config file under 'WEIGHTS' must be given"
-        assert os.path.isabs(model_config['WEIGHTS']['CUSTOM_ABSOLUTE_PATH']), \
-            "The given 'CUSTOM_ABSOLUTE_PATH' is not an absolute path to wights file, please give an absolute"
-
-        weights_path = str(model_config['WEIGHTS']['CUSTOM_ABSOLUTE_PATH'])
-
-    elif model_config['WEIGHTS']['TYPE'].lower() != 'new':
-        assert model_config['WEIGHTS']['NAME'] is not None, \
-            "'NAME' (name of the wights file) in config file under 'WEIGHTS' must be given"
-        weights_path = os.path.join(model_config['WEIGHTS']['PATH'], model_config['WEIGHTS']['NAME'])
-    
-    else:
-        weights_path = None
-
-    # weights_path = '/home/wpingcheng/Models/depression_classifier_new/Visual_ConvLSTM/model_weights/V+Conv2D-BiLSTM+PHQ-Subscores+Soft_2022-03-15_170617_f1_score-0.6094.pt'
-    # checkpoint = torch.load(weights_path)
-    # print("Loading Deep Visual Net weights from {}".format(weights_path))
-    # visual_net.load_state_dict(checkpoint['visual_net'])
-
-    # weights_path = '/home/wpingcheng/Models/depression_classifier_new/Audio_ConvLSTM/model_weights/A+Conv-BiLSTM-1D+PHQ-Subscores+Mel+GB+Soft_2022-03-14_173846_score-0.6096.pt'
-    # checkpoint = torch.load(weights_path)
-    # print("Loading Deep Audio Net weights from {}".format(weights_path))
-    # audio_net.load_state_dict(checkpoint['audio_net'])
-
-    # weights_path = '/home/wpingcheng/Models/depression_classifier_new/Text_ConvLSTM/model_weights/T+Conv1D-BiLSTM+PHQ-Subscores_2022-03-22_084342_acc-50.8163.pt'
-    # checkpoint = torch.load(weights_path)
-    # print("Loading Deep Text Net weights from {}".format(weights_path))
-    # text_net.load_state_dict(checkpoint['text_net'])
-
+    weights_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "model_weights/AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention.pt")
 
     # load model weights
     if weights_path is not None:
         model_config['WEIGHTS']['INCLUDED'] = [x.lower() for x in model_config['WEIGHTS']['INCLUDED']]
-
         checkpoint = torch.load(weights_path)
-
         if 'visual_net' in model_config['WEIGHTS']['INCLUDED']:
             print("Loading Deep Visual Net weights from {}".format(weights_path))
             new_state_dict = OrderedDict()
