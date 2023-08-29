@@ -19,7 +19,7 @@ def analyze_video_feature(input_dir, output_dir, skip_frame ='0'):
     os.environ['OMP_NUM_THREADS'] = '1'
     os.environ['VECLIB_MAXIMUM_THREADS'] = '1'
     root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-    exe_path = os.path.join(root_dir, "bin", "FaceAnalyzerVid")
+    exe_path = os.path.join(root_dir, "weights/openface/bin", "FaceAnalyzerVid")
     if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
         os.mkdir(output_dir)

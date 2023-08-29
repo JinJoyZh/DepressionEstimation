@@ -4,7 +4,7 @@ import pandas as pd
 
 def analyze_text_feature(transcrpit_file_path):
     root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-    model_path = os.path.join(root_dir, "bin", "universal-sentence-encoder-large_5")
+    model_path = os.path.join(root_dir, "weights/openface/bin", "universal-sentence-encoder-large_5")
     use_embed_large = hub.load(model_path)
     text_df = pd.read_csv(transcrpit_file_path)
     sentences = []

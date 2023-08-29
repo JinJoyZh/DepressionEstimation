@@ -202,7 +202,7 @@ def get_models(model_config, args, model_type=None, ckpt_path=None):
     # fusion_net = fusion_net.to(args.device)
     evaluator = evaluator.to(args.device)
 
-    weights_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "model_weights/AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention.pt")
+    weights_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "service/weights/depressionestimation/AVT+ConvBiLSTM+PHQ-Subscores+Sub-Attention.pt")
 
     # load model weights
     if weights_path is not None:

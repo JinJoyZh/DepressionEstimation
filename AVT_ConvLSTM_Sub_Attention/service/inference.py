@@ -6,9 +6,6 @@ import sys
 sys.path.append("..") 
 from utils import get_models
 
-# root_dir = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-# sys.path.append(root_dir)
-
 
 def model_processing(input, config, args):
     start_time = time.time()
@@ -62,8 +59,5 @@ def model_processing(input, config, args):
     return probs
     
 
-
-if __name__ == '__main__':
-  a = 1
 
 
