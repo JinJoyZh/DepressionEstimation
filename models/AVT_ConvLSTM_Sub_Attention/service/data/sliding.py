@@ -1,5 +1,3 @@
-import os
-
 import numpy as np
 
 WINDOW_SIZE     = 15    # 60 is recommended

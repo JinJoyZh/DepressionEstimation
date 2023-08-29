@@ -138,7 +138,10 @@ class MultimodalDiagnostic:
                 features = np.append(features, data, axis = 0)
         return features
 
-    # 添加新的访谈文字记录    
+    # 添加新的访谈文字记录 
+    # start_time 受访者开始说这句话的时间
+    # end_time  受访者结束说这句话的时间
+    # value     文本内容（英文）   
     def transcript(self, start_time, end_time, value):
         file_path = os.path.join(self.USER_DATA_DIR, 'transcript.csv')
         city = pd.DataFrame([[start_time, end_time, value]], columns=['start_time', 'end_time', 'value'])
