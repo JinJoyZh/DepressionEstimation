@@ -154,12 +154,25 @@ class MultimodalDiagnostic:
         pass
     
 if __name__ == '__main__':
+    #实例化MultimodalDiagnostic
     user_data_dir = "/home/zjy/workspace/tmp/interviewee_12345_1692723605"
     serivce = MultimodalDiagnostic(user_data_dir)
     print('start to get video feature')
+
+    #以下出现四次语音片段，每次都需要 1.提取video_features 2. 记录文字内容
+    #case 1
     serivce.generate_video_features("vdieo_1692758150.wmv")
+    # serivce.transcript("1692758150", "1692758250", "aaaaa")
+    #case 2
     serivce.generate_video_features("video_1692757670.wmv")
+    # serivce.transcript("1692757670", "1692757770", "bbbbb")
+    #case 3
     serivce.generate_video_features("video_1692757850.wmv")
+     # serivce.transcript("1692757850, "1692757950", "bbbbb")
+     #case 4
     serivce.generate_video_features("video_1693300015.wmv")
+     # serivce.transcript("1692757850, "1692757950", "bbbbb")
+
+    #生成PHQ
     video_frame_rate = 30
     phq_score_pred, phq_binary_pred = serivce.generate_phq(30)
