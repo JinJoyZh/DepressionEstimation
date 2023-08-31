@@ -51,7 +51,9 @@ class MultimodalDiagnostic:
             if not os.path.exists(dir) :
                 os.makedirs(dir) 
 
-    #ivideo_file_name 视频文件全名。视频文件格式支持mp4, wmv
+    #提取并记录人脸关键点
+    #@Param 
+    #ivideo_file_name 视频文件全名。视频文件格式支持wmv
     #skip_frame 分析视频过程中跳帧的数量。可以增加改数值减小算力消耗，但不推荐这么做
     def generate_video_features(self, video_file_name, skip_frame = '0'):
         input_path = os.path.join(self.USER_DATA_DIR, video_file_name)
@@ -63,6 +65,19 @@ class MultimodalDiagnostic:
         np.save(key_point_feature_path, key_points_set)
         gaze_feature_path = os.path.join(self.GAZE_CACHE, "gaze_" + time_zone + ".npy")
         np.save(gaze_feature_path, gaze_set)
+    
+    # 添加新的访谈文字记录 
+    # @Param 
+    # start_time 受访者开始说这句话的时间
+    # end_time  受访者结束说这句话的时间
+    # value     文本内容（英文）   
+    def transcript(self, start_time, end_time, value):
+        file_path = os.path.join(self.USER_DATA_DIR, 'transcript.csv')
+        city = pd.DataFrame([[start_time, end_time, value]], columns=['start_time', 'end_time', 'value'])
+        need_header = True
+        if os.path.isfile(file_path):
+            need_header = False
+        city.to_csv(file_path, mode = 'a', header = need_header)
 
     def _generate_audio_features(self, root_path):
         return analyze_audio_feature(root_path)
@@ -73,11 +88,11 @@ class MultimodalDiagnostic:
     # @Param 
     # visual_sr 视频帧率
     # @return
-    # probs     PHQ值
+    # phq_score_pred, phq_binary_pred     PHQ值和二分类信息
     def generate_phq(self, visual_sr):
         print("The Multimodal analysis starts!")
         start = time.time()
-        config_file = os.path.join(root_dir, 'config/config_phq-subscores.yaml')
+        config_file = os.path.join(root_dir, '../config/config_phq-subscores.yaml')
         config = YamlConfig(config_file)
         phq_score_pred = []
         phq_binary_pred = []
@@ -137,18 +152,6 @@ class MultimodalDiagnostic:
             else:
                 features = np.append(features, data, axis = 0)
         return features
-
-    # 添加新的访谈文字记录 
-    # start_time 受访者开始说这句话的时间
-    # end_time  受访者结束说这句话的时间
-    # value     文本内容（英文）   
-    def transcript(self, start_time, end_time, value):
-        file_path = os.path.join(self.USER_DATA_DIR, 'transcript.csv')
-        city = pd.DataFrame([[start_time, end_time, value]], columns=['start_time', 'end_time', 'value'])
-        need_header = True
-        if os.path.isfile(file_path):
-            need_header = False
-        city.to_csv(file_path, mode = 'a', header = need_header)
     
     class Args(object):
         pass
