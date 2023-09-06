@@ -162,16 +162,16 @@ if __name__ == '__main__':
     #以下出现四次语音片段，每次都需要 1.提取video_features 2. 记录文字内容
     #case 1
     serivce.generate_video_features("video_1692757670.wmv")
-    # serivce.transcript("1692757670", "1692757840", "Hello world")
+    serivce.transcript("1692757670", "1692757840", "Hello world")
     #case 2
     serivce.generate_video_features("video_1692757850.wmv")
-     # serivce.transcript("1692757850", "1692757970", "When it comes to relationships, the angel number")
+    serivce.transcript("1692757850", "1692757970", "When it comes to relationships, the angel number")
     #case 3
     serivce.generate_video_features("vdieo_1692758150.wmv")
-    # serivce.transcript("1692758150", "1692758250", "So your angels want you to focus on tapping into your inner strengths")
+    serivce.transcript("1692758150", "1692758250", "So your angels want you to focus on tapping into your inner strengths")
      #case 4
     serivce.generate_video_features("video_1693300015.wmv")
-     # serivce.transcript("1692757850, "1692757950", "So your angels want you to focus on tapping.0")
+    serivce.transcript("1692757850", "1692757950", "So your angels want you to focus on tapping.0")
 
     #生成PHQ
     video_frame_rate = 30

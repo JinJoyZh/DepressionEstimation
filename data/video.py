@@ -6,10 +6,6 @@ import time
 import numpy as np
 import pandas as pd
 
-root_dir = os.path.abspath(os.path.dirname(__file__))
-root_dir = os.path.abspath(os.path.join(root_dir, "../.."))
-sys.path.append(root_dir)
-
 from utils import get_sorted_files
 
 KEY_POINT_NUM = 68
@@ -95,22 +91,5 @@ if __name__ == '__main__':
     #In order to prevent memory overflow, some functions of OpenBlus are restricted
     os.system("export OMP_NUM_THREADS=1")
     os.system("export VECLIB_MAXIMUM_THREADS=1")
-
-    # analyze images
-    # exe_path =  "/home/zjy/workspace/DepressionRec/alg/OpenFace/experiments/lib/FaceAnalyzerImgs"
-    # input_dir = "/home/zjy/workspace/DepressionRec/alg/OpenFace/samples"
-    # output_dir = "/home/zjy/workspace/DepressionRec/alg/OpenFace/experiments/output/Imgs"
-    # subprocess.Popen([exe_path, "-fdir", input_dir, "-out_dir", output_dir])
-
-    # analyze videos
-    # exe_path = "./models/AVT_ConvLSTM_Sub_Attention/flask/bin/FaceAnalyzerVid"
-    # exe = os.path.abspath(exe_path)
-    # input_dir = "/home/zjy/workspace/DepressionRec/alg/OpenFace/samples/default.wmv"
-    # output_dir = "/home/zjy/workspace/DepressionRec/alg/DepressionEstimation/models/AVT_ConvLSTM_Sub_Attention/flask/cache/video_feature"
-    # subprocess.Popen([exe, "-f", input_dir, "-out_dir", output_dir, "-skip_frame", "2"])
-
-    # current_directory = os.path.dirname(os.path.abspath(__file__))
-    # print(current_directory)
     root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-    # path = os.path.join(root_dir, "bin", "FaceAnalyzerVid")
     print(root_dir)

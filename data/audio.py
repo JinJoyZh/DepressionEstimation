@@ -5,9 +5,6 @@ import librosa
 import numpy as np
 import wave
 
-root_dir = os.path.abspath(os.path.dirname(__file__))
-root_dir = os.path.abspath(os.path.join(root_dir, "../.."))
-sys.path.append(root_dir)
 from utils import get_sorted_files
 
 def analyze_audio_feature(root_path):
