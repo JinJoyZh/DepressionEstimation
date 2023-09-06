@@ -2,15 +2,11 @@
 import os
 import re
 import shutil
-import sys
 import time
 import numpy as np
 import pandas as pd
 from autolab_core import YamlConfig
 import torch
-
-root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-sys.path.append(root_dir)
 
 from data.audio import analyze_audio_feature
 from data.text import analyze_text_feature
@@ -92,8 +88,9 @@ class MultimodalDiagnostic:
     def generate_phq(self, visual_sr):
         print("The Multimodal analysis starts!")
         start = time.time()
-        config_file = os.path.join(root_dir, '../config/config_phq-subscores.yaml')
-        config = YamlConfig(config_file)
+        root_dir = os.path.abspath(os.path.dirname(__file__))
+        config_file_path = os.path.join(root_dir, 'config/config_phq-subscores.yaml')
+        config = YamlConfig(config_file_path)
         phq_score_pred = []
         phq_binary_pred = []
         # set up torch device: 'cpu' or 'cuda' (GPU)
@@ -157,24 +154,24 @@ class MultimodalDiagnostic:
         pass
     
 if __name__ == '__main__':
-    #实例化MultimodalDiagnostic
+    # #实例化MultimodalDiagnostic
     user_data_dir = "/home/zjy/workspace/tmp/interviewee_12345_1692723605"
     serivce = MultimodalDiagnostic(user_data_dir)
     print('start to get video feature')
 
     #以下出现四次语音片段，每次都需要 1.提取video_features 2. 记录文字内容
     #case 1
-    serivce.generate_video_features("vdieo_1692758150.wmv")
-    # serivce.transcript("1692758150", "1692758250", "aaaaa")
-    #case 2
     serivce.generate_video_features("video_1692757670.wmv")
-    # serivce.transcript("1692757670", "1692757770", "bbbbb")
-    #case 3
+    # serivce.transcript("1692757670", "1692757840", "Hello world")
+    #case 2
     serivce.generate_video_features("video_1692757850.wmv")
-     # serivce.transcript("1692757850, "1692757950", "bbbbb")
+     # serivce.transcript("1692757850", "1692757970", "When it comes to relationships, the angel number")
+    #case 3
+    serivce.generate_video_features("vdieo_1692758150.wmv")
+    # serivce.transcript("1692758150", "1692758250", "So your angels want you to focus on tapping into your inner strengths")
      #case 4
     serivce.generate_video_features("video_1693300015.wmv")
-     # serivce.transcript("1692757850, "1692757950", "bbbbb")
+     # serivce.transcript("1692757850, "1692757950", "So your angels want you to focus on tapping.0")
 
     #生成PHQ
     video_frame_rate = 30
