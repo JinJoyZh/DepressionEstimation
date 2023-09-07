@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello():
-    user_data_dir = "/home/zjy/workspace/tmp/multimodal/interviewee_12345_1692723605"
+    user_data_dir = "/app/interviewee_12345_1692723605"
     serivce = MultimodalDiagnostic(user_data_dir)
     print('start to get video feature')
 
@@ -41,7 +41,7 @@ def multi_model_predict():
     source = os.getenv("SOURCE_FOLDER", "/app/source")
     root_folder = os.path.join(source,content['rootFolder'])
     print(f"save to folder {root_folder} \n")
-    serivce = MultimodalDiagnostic("/home/zjy/workspace/tmp/multimodal/interviewee_12345_1692723605")
+    serivce = MultimodalDiagnostic(root_folder)
     conversations = content['conversations']
     for c in conversations:
         video = c['video']
