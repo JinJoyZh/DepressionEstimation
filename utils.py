@@ -207,7 +207,8 @@ def get_models(model_config, args, model_type=None, ckpt_path=None):
     # load model weights
     if weights_path is not None:
         model_config['WEIGHTS']['INCLUDED'] = [x.lower() for x in model_config['WEIGHTS']['INCLUDED']]
-        checkpoint = torch.load(weights_path)
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        checkpoint = torch.load(weights_path, map_location=device)
         if 'visual_net' in model_config['WEIGHTS']['INCLUDED']:
             print("Loading Deep Visual Net weights from {}".format(weights_path))
             new_state_dict = OrderedDict()
