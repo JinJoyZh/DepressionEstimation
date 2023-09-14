@@ -7,9 +7,10 @@ def sliding_window(fkps_features, gaze_features, mel_spectro, text_feature, visu
     frame_size = WINDOW_SIZE * visual_sr
     hop_size = (WINDOW_SIZE - OVERLAP_SIZE) * visual_sr
     num_frame = get_num_frame(fkps_features, frame_size, hop_size)
+    if num_frame < 2:
+        return -1, -1, -1, -1
     text_frame_size = 10
     text_hop_size = get_text_hop_size(text_feature, text_frame_size, num_frame)
-
     # start sliding through and generating data
     for i in range(num_frame):
         frame_sample_fkps = visual_padding(fkps_features[i * hop_size:i * hop_size + frame_size], frame_size)
@@ -39,7 +40,6 @@ def visual_padding(data, pad_size):
         padded_data[:data.shape[0]] = data
     else:
         padded_data = data
-
     return padded_data
 
 def audio_padding(data, pad_size):

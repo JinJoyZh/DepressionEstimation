@@ -117,6 +117,9 @@ class MultimodalDiagnostic:
         gaze_features = self._load_video_feature(self.GAZE_CACHE)
         keypoint_features = self._load_video_feature(self.KEYPOINT_CACHE)
         frame_sample_fkps, frame_sample_gaze, frame_sample_mspec, frame_sample_text = sliding_window(keypoint_features, gaze_features, mel_spectro, text_features, visual_sr)
+        if not isinstance(frame_sample_fkps, np.ndarray):
+            # error: the video is too short to generote phq 
+            return [-1.0], [-1]
         visual_feature = np.concatenate((frame_sample_fkps, frame_sample_gaze), axis=1)
         visual_feature = torch.from_numpy(np.asarray([visual_feature], dtype='float32'))
         frame_sample_mspec = torch.from_numpy(np.asarray([frame_sample_mspec], dtype='float32'))
